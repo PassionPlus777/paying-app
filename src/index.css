@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+.content-title {
+  color: #fa551d;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+.search-result {
+  background-color: white;
+  color: #fa551d;
+  box-shadow: 3px 5px 5px rgba(250, 85, 29, 0.3);
+  border: #fa551d 1px solid;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 1.875rem /* 30px */;
+  line-height: 2.25rem /* 36px */;
+  margin-top: 0.5rem /* 8px */;
+  margin-bottom: 0.5rem /* 8px */;
+}
+
+form.payment-form {
+  box-shadow: 0px 0px 0px 0.5px rgba(50, 50, 93, 0.1),
+    0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07);
+}
+
+.search-result:hover {
+  background-color: #fa551d;
+  color: white;
+  transition-duration: 0.5s;
+}
+
+.line {
+  animation: moveLine 4s linear infinite;
+}
+
+.completion {
+  background-image: url("https://cityparkmanagement.com/wp-content/uploads/2024/01/AdobeStock-kjzMV5wbKN.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.card-modal .MuiBox-root {
+  width: 90%;
+}
+
+@media (min-width: 640px) {
+  .card-modal .MuiBox-root {
+    width: 60%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-modal .MuiBox-root {
+    width: 50%;
+  }
+}
