@@ -1,6 +1,6 @@
 import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 import { SearchPage, PaymentPage } from "./pages";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 // import Completion from "./components/Modal/Completion";
 import { Provider } from "react-redux";

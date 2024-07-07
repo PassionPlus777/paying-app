@@ -27,7 +27,7 @@ const PaymentPage = () => {
       <TabContext value={tabValue}>
         <Box sx={{ borderBottom: 1, borderColor: "#FFAD92" }}>
           <TabList
-            onChange={(e, value) => setTabValue(value)}
+            onChange={(_, value) => setTabValue(value)}
             variant="fullWidth"
             sx={{
               "& .MuiTabs-indicator": {

@@ -1,4 +1,4 @@
-import { useRef, useState, ChangeEvent } from "react";
+import { useRef, useState } from "react";
 import { Button, Box, Typography } from "@mui/material";
 
 import closeBtn from "../assets/CloseBtn.svg";

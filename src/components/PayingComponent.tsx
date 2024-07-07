@@ -29,12 +29,12 @@ const PayingComponent: FC<PayingProps> = ({
   amount,
 }) => {
   const [modalOpen, setModalOpen] = useState<string>("");
-  const payAmount = amount;
-  const plateformFee = 0.5;
-  const subTotal = payAmount + plateformFee;
-  const salesTax = payAmount * 0.065;
-  const totalDue = subTotal + salesTax;
-  const fomattedTotalDue = parseFloat(totalDue.toFixed(2));
+  // const payAmount = amount;
+  // const plateformFee = 0.5;
+  // const subTotal = payAmount + plateformFee;
+  // const salesTax = payAmount * 0.065;
+  // const totalDue = subTotal + salesTax;
+  // const fomattedTotalDue = parseFloat(totalDue.toFixed(2));
 
   const closeModal = () => {
     setModalOpen("");

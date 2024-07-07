@@ -16,7 +16,7 @@ const CompletionComponent: FC<CompletionComponentProps> = ({
   const [emial, setEmail] = useState<string>("");
   const [siteCode, setSiteCode] = useState<string>("");
   const [plateNumber, setPlateNumber] = useState<string>("");
-  const [duration, setDuraion] = useState<string>("");
+  // const [duration, setDuraion] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
 
   useEffect(() => {
@@ -36,8 +36,8 @@ const CompletionComponent: FC<CompletionComponentProps> = ({
       lot && setSiteCode(lot);
       const plageNumber = url.searchParams.get("plageNumber");
       plageNumber && setPlateNumber(plageNumber);
-      const duration = url.searchParams.get("duration");
-      duration && setDuraion(duration);
+      // const duration = url.searchParams.get("duration");
+      // duration && setDuraion(duration);
       const totalAmount = url.searchParams.get("totalAmount");
       totalAmount && setAmount(totalAmount);
       const receiptEmail = url.searchParams.get("receiptEmail");
