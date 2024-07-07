@@ -6,7 +6,6 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Provider } from "react-redux";
 import { store } from "./redux";
 import CompletionComponent from "./components/CompletionComponent";
-import AppleComponent from "./components/AppleComponent";
 
 function App() {
   useEffect(() => {}, []);
@@ -26,7 +25,6 @@ function App() {
             <div className="content-title md:text-7xl sm:text-5xl text-3xl text-center">
               Pay For Parking
             </div>
-            <AppleComponent onClose={() => {}} />
             <div className="w-[100%] sm:w-[80%] md:w-[60%] mt-10">
               <Routes>
                 <Route path="/" element={<SearchPage />} />
