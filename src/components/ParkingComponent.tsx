@@ -97,9 +97,10 @@ const ParkingComponent: FC<ParkingProps> = ({
           error={true}
           helperText={
             session._id
-              ? session.status !== "OK"
-                ? "You have already violated the rules of this parking lot."
-                : ""
+              ? session.status === "PAID"
+                ? "You have already paid for your parking."
+                : session.status !== "OK" &&
+                  "You have already violated the rules of this parking lot."
               : ""
           }
         />

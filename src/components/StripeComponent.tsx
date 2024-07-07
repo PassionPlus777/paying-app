@@ -5,7 +5,9 @@ import {
   useElements,
   PaymentElementProps,
 } from "@stripe/react-stripe-js";
-import { useAppSelector } from "../redux";
+
+import { useAppDispatch, useAppSelector } from "../redux";
+import { payForParking } from "../redux/slice/appReducer";
 
 const StripeComponent = ({
   clientSecretKey,
@@ -20,32 +22,44 @@ const StripeComponent = ({
 }) => {
   const stripe = useStripe();
   const elements = useElements();
+  const dispatch = useAppDispatch();
 
   const { lot } = useAppSelector(({ app }) => app);
 
   const [email, setEmail] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [status, setStatus] = useState<string>("");
 
-  useEffect(() => {
-    if (!stripe) {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!stripe || !elements || !clientSecretKey) {
+      // Stripe.js hasn't yet loaded.
+      // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
 
-    const clientSecret = new URLSearchParams(window.location.search).get(
-      clientSecretKey
-    );
+    setIsLoading(true);
 
-    if (!clientSecret) {
-      return;
-    }
+    const { error, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        // Make sure to change this to your payment completion page
+        // return_url: `${window.location.origin}/completion?lot=${lot.siteCode}&plageNumber=${plateNumber}&duration=${duration}&totalAmount=${totalAmount}&receiptEmail=${email}`,
+        receipt_email: email,
+      },
+      redirect: "if_required",
+    });
 
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-      if (!paymentIntent) {
-        setMessage("Something went wrong.");
-        return;
+    if (error) {
+      if (error.type === "card_error" || error.type === "validation_error") {
+        setMessage(error.message ?? "An error occurred.");
+      } else {
+        setMessage("An unexpected error occurred.");
       }
-
+      setStatus(error.type);
+    } else if (paymentIntent) {
       switch (paymentIntent.status) {
         case "succeeded":
           setMessage("Payment succeeded!");
@@ -60,44 +74,7 @@ const StripeComponent = ({
           setMessage("Something went wrong.");
           break;
       }
-    });
-  }, [stripe]);
-
-  console.log(
-    `lot=${lot.siteCode}&plageNumber=${plateNumber}&duration=${duration}&totalAmount=${totalAmount}&receiptEmail=${email}`
-  );
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!stripe || !elements || !clientSecretKey) {
-      // Stripe.js hasn't yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
-      return;
-    }
-
-    setIsLoading(true);
-
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        // Make sure to change this to your payment completion page
-        return_url: `${window.location.origin}/completion?lot=${lot.siteCode}&plageNumber=${plateNumber}&duration=${duration}&totalAmount=${totalAmount}&receiptEmail=${email}`,
-        receipt_email: email,
-      },
-    });
-
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
-    if (error) {
-      if (error.type === "card_error" || error.type === "validation_error") {
-        setMessage(error.message ?? "An error occurred.");
-      } else {
-        setMessage("An unexpected error occurred.");
-      }
+      setStatus(paymentIntent.status);
     }
     setIsLoading(false);
   };
@@ -105,6 +82,22 @@ const StripeComponent = ({
   const paymentElementOptions: PaymentElementProps["options"] = {
     layout: "tabs",
   };
+
+  useEffect(() => {
+    status === "succeeded" &&
+      totalAmount &&
+      plateNumber &&
+      lot._id &&
+      duration &&
+      dispatch(
+        payForParking({
+          Amount: totalAmount,
+          Code: plateNumber,
+          Lot: lot._id,
+          duration: duration,
+        })
+      );
+  }, [status, totalAmount, plateNumber, duration]);
 
   return (
     <form
@@ -138,7 +131,18 @@ const StripeComponent = ({
       </button>
       {/* Show any error or success messages */}
       {message && (
-        <div className="text-center mt-2 text-red-600">{message}</div>
+        <div className="text-center mt-2 text-red-600">
+          {status === "succeeded" ? (
+            <a
+              className="underline"
+              href={`${window.location.origin}/completion?lot=${lot.siteCode}&plageNumber=${plateNumber}&duration=${duration}&totalAmount=${totalAmount}&receiptEmail=${email}`}
+            >
+              {message}
+            </a>
+          ) : (
+            message
+          )}
+        </div>
       )}
     </form>
   );

@@ -17,8 +17,6 @@ export const fetchSession = createAsyncThunk<
       method: "GET",
       url: `/data/${lotId}/${plate}`,
     });
-    console.log(data);
-
     return data;
   } catch (error) {
     return defaultSessionData; // Return a default value in case of an error
@@ -53,6 +51,33 @@ export const getClientSecret = createAsyncThunk<GetClientSecretRes, number>(
     }
   }
 );
+
+interface PayForParkingRes {
+  success: boolean;
+}
+
+interface PayForParkingParams {
+  Amount: number;
+  Code: string;
+  Lot: string;
+  duration: number;
+}
+
+export const payForParking = createAsyncThunk<
+  PayForParkingRes,
+  PayForParkingParams
+>("payforparking", async ({ Amount, Code, Lot, duration }) => {
+  try {
+    const { data } = await request({
+      method: "POST",
+      url: "/pay-for-parking",
+      data: { Amount, Code, Lot, duration },
+    });
+    return data;
+  } catch (error) {
+    return { success: false }; // Return an object with an empty clientSecret in case of an error
+  }
+});
 
 const initialState: AppStateType = {
   session: defaultSessionData,
